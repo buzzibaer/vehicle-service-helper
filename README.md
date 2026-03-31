@@ -48,6 +48,10 @@ Updating via HACS:
 
 - When a new version is published, open HACS, update **Vehicle Service Helper**, and restart Home Assistant.
 
+HACS troubleshooting:
+
+- If HACS reports `The version <hash> for this integration can not be used with HACS`, open the repository in HACS and select the latest tagged release version (for example `v0.1.1`) instead of a commit hash.
+
 ## Initial Setup in Home Assistant
 
 After adding the integration:
