@@ -11,6 +11,55 @@
 - Manual odometer input with rollback protection
 - Services to set odometer and mark service as done
 
+## Installation
+
+You can install this custom integration in two ways.
+
+### Option A: Manual installation (recommended for development)
+
+1. Open your Home Assistant config directory.
+2. Create this path if it does not exist: `custom_components/vehicle_service_helper`
+3. Copy the contents of this repository folder `custom_components/vehicle_service_helper/` into your Home Assistant config folder at:
+   `config/custom_components/vehicle_service_helper/`
+4. Restart Home Assistant.
+5. Go to **Settings -> Devices & Services -> Add Integration**.
+6. Search for **Vehicle Service Helper**.
+7. Complete the setup form (vehicle name, distance unit, optional license plate).
+
+### Option B: Install via HACS (custom repository)
+
+If you use HACS, add this repository as a custom integration repo, then install and restart Home Assistant.
+
+Prerequisites:
+
+- HACS is already installed in Home Assistant.
+- Advanced mode is enabled for your user profile (needed in some HA versions to see custom repository options).
+
+1. Open HACS.
+2. Go to **HACS -> Integrations -> menu (three dots) -> Custom repositories**.
+3. Add repository URL:
+   `https://github.com/buzzibaer/vehicle-service-helper`
+4. Category: **Integration**.
+5. Install **Vehicle Service Helper** from HACS.
+6. Restart Home Assistant.
+7. Add the integration in **Settings -> Devices & Services**.
+
+Updating via HACS:
+
+- When a new version is published, open HACS, update **Vehicle Service Helper**, and restart Home Assistant.
+
+## Initial Setup in Home Assistant
+
+After adding the integration:
+
+1. Open the integration tile and click **Configure**.
+2. Add your first service template (for example Oil Change).
+3. Define mileage and/or time intervals.
+4. Set baseline values (last service date and odometer).
+5. Save.
+
+The integration starts with no templates by default, so reminders appear only after you add templates.
+
 ## Entity Model
 
 Per vehicle:
@@ -25,6 +74,14 @@ Per service template:
 - Remaining days sensor (if time rule enabled)
 - Binary sensor `service_due`
 
+## Typical Usage
+
+- Update odometer in the number entity regularly.
+- Use template status sensors in dashboards and automations.
+- Use status transitions (`due_soon`, `overdue`) to trigger notifications.
+
+See `docs/automation-examples.md` for YAML examples.
+
 ## Services
 
 ### `vehicle_service_helper.set_odometer`
@@ -33,6 +90,15 @@ Per service template:
 - `odometer` (required)
 - `override` (optional, default `false`)
 
+Example:
+
+```yaml
+service: vehicle_service_helper.set_odometer
+data:
+  entry_id: YOUR_CONFIG_ENTRY_ID
+  odometer: 125430
+```
+
 ### `vehicle_service_helper.mark_service_done`
 
 - `entry_id` (required)
@@ -40,6 +106,21 @@ Per service template:
 - `service_date` (optional, ISO date)
 - `odometer` (optional)
 
-## Notes
+Example:
 
-- This repository currently lacks a Python runtime in the execution environment, so tests cannot be run here until Python and pytest are available.
+```yaml
+service: vehicle_service_helper.mark_service_done
+data:
+  entry_id: YOUR_CONFIG_ENTRY_ID
+  template_id: YOUR_TEMPLATE_ID
+  service_date: "2026-03-31"
+  odometer: 125430
+```
+
+## Development
+
+Run tests locally:
+
+```bash
+python -m pytest tests -v
+```
