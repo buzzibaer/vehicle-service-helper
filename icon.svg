@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Vehicle Service Helper icon</title>
+  <desc id="desc">A car with a wrench and reminder dot</desc>
+
+  <circle cx="256" cy="256" r="232" fill="#1f2937"/>
+
+  <path d="M128 282c0-18 14-32 32-32h26l26-50c9-16 25-26 43-26h92c16 0 31 8 40 22l32 54h25c18 0 32 14 32 32v43c0 11-9 20-20 20h-15c-4 0-8-3-9-7a37 37 0 0 0-73 0c-1 4-5 7-9 7H225c-4 0-8-3-9-7a37 37 0 0 0-73 0c-1 4-5 7-9 7h-14c-11 0-20-9-20-20z" fill="#f9fafb"/>
+
+  <circle cx="179" cy="338" r="25" fill="#1f2937"/>
+  <circle cx="337" cy="338" r="25" fill="#1f2937"/>
+
+  <rect x="283" y="314" width="169" height="34" rx="17" transform="rotate(44 283 314)" fill="#14b8a6"/>
+  <circle cx="451" cy="467" r="22" fill="#14b8a6"/>
+  <circle cx="451" cy="467" r="10" fill="#1f2937"/>
+  <circle cx="271" cy="290" r="12" fill="#14b8a6"/>
+
+  <circle cx="403" cy="108" r="42" fill="#f59e0b"/>
+  <path d="M403 84v24l16 10" fill="none" stroke="#1f2937" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -11,6 +11,11 @@
 - Manual odometer input with rollback protection
 - Services to set odometer and mark service as done
 
+## Branding
+
+- Repository icon for HACS is provided as `icon.png`.
+- Editable source is available as `icon.svg`.
+
 ## Installation
 
 You can install this custom integration in two ways.
