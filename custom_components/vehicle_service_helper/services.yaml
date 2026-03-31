@@ -1,0 +1,42 @@
+set_odometer:
+  name: Set odometer
+  description: Set the current odometer value for a vehicle entry.
+  fields:
+    entry_id:
+      required: true
+      selector:
+        text:
+    odometer:
+      required: true
+      selector:
+        number:
+          min: 0
+          mode: box
+    override:
+      required: false
+      default: false
+      selector:
+        boolean:
+
+mark_service_done:
+  name: Mark service done
+  description: Mark a service template as completed.
+  fields:
+    entry_id:
+      required: true
+      selector:
+        text:
+    template_id:
+      required: true
+      selector:
+        text:
+    service_date:
+      required: false
+      selector:
+        date:
+    odometer:
+      required: false
+      selector:
+        number:
+          min: 0
+          mode: box

@@ -1,0 +1,64 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Vehicle setup",
+        "description": "Create one vehicle entry and add service templates later.",
+        "data": {
+          "vehicle_name": "Vehicle name",
+          "distance_unit": "Distance unit",
+          "license_plate": "License plate"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "add_template": {
+        "title": "Add service template",
+        "data": {
+          "name": "Template name",
+          "icon": "Icon",
+          "mileage_interval": "Mileage interval",
+          "time_interval_months": "Time interval (months)",
+          "due_soon_distance": "Due soon distance",
+          "due_soon_days": "Due soon days",
+          "last_service_odometer": "Last service odometer",
+          "last_service_date": "Last service date",
+          "enabled": "Enabled"
+        }
+      },
+      "edit_template_select": {
+        "title": "Select template",
+        "data": {
+          "id": "Template"
+        }
+      },
+      "edit_template": {
+        "title": "Edit service template",
+        "data": {
+          "name": "Template name",
+          "icon": "Icon",
+          "mileage_interval": "Mileage interval",
+          "time_interval_months": "Time interval (months)",
+          "due_soon_distance": "Due soon distance",
+          "due_soon_days": "Due soon days",
+          "last_service_odometer": "Last service odometer",
+          "last_service_date": "Last service date",
+          "enabled": "Enabled"
+        }
+      },
+      "remove_template": {
+        "title": "Remove service template",
+        "data": {
+          "id": "Template"
+        }
+      }
+    },
+    "error": {
+      "name_required": "Template name is required.",
+      "interval_required": "Set mileage or time interval.",
+      "invalid_template": "Template values are invalid."
+    }
+  }
+}
