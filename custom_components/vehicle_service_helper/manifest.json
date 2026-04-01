@@ -1,7 +1,7 @@
 {
   "domain": "vehicle_service_helper",
   "name": "Vehicle Service Helper",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "config_flow": true,
   "iot_class": "local_polling",
   "requirements": [],

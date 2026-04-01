@@ -15,7 +15,8 @@
 
 - Add your own branding assets when ready:
   - Repository icon for HACS: `icon.png` at repo root
-  - Integration assets: `custom_components/vehicle_service_helper/icon.png`, `icon@2x.png`, `logo.png`, `logo@2x.png`
+  - Integration assets (HA 2026.3+): place files in `custom_components/vehicle_service_helper/brand/`
+    - `icon.png`, `icon@2x.png`, `logo.png`, `logo@2x.png`
 
 ## Installation
 
