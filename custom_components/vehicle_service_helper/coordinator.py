@@ -37,6 +37,25 @@ def get_current_odometer(entry: ConfigEntry) -> float:
         return DEFAULT_ODOMETER
 
 
+def get_technical_inspection_last_date(entry: ConfigEntry) -> date | None:
+    value = entry.options.get(OPTION_TECHNICAL_INSPECTION_LAST_DATE)
+    if not isinstance(value, str):
+        return None
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        return None
+
+
+def get_technical_inspection_interval_days(entry: ConfigEntry) -> int | None:
+    value = entry.options.get(OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS)
+    try:
+        interval_days = int(value)
+    except (TypeError, ValueError):
+        return None
+    return interval_days if interval_days > 0 else None
+
+
 class VehicleServiceCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.entry = entry
@@ -76,6 +95,28 @@ class VehicleServiceCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]
 
         options = dict(self.entry.options)
         options[OPTION_CURRENT_ODOMETER] = float(odometer)
+        self.hass.config_entries.async_update_entry(self.entry, options=options)
+        refreshed_entry = self.hass.config_entries.async_get_entry(self.entry.entry_id)
+        if refreshed_entry is not None:
+            self.entry = refreshed_entry
+        await self.async_request_refresh()
+
+    async def async_set_technical_inspection(
+        self,
+        *,
+        last_inspection_date: date | None = None,
+        interval_days: int | None = None,
+    ) -> None:
+        options = dict(self.entry.options)
+
+        if last_inspection_date is not None:
+            options[OPTION_TECHNICAL_INSPECTION_LAST_DATE] = last_inspection_date.isoformat()
+
+        if interval_days is not None:
+            if interval_days <= 0:
+                raise ValueError("inspection_interval_must_be_positive")
+            options[OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS] = int(interval_days)
+
         self.hass.config_entries.async_update_entry(self.entry, options=options)
         refreshed_entry = self.hass.config_entries.async_get_entry(self.entry.entry_id)
         if refreshed_entry is not None:

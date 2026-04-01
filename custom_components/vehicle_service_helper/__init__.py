@@ -7,7 +7,7 @@ from .const import DOMAIN
 from .coordinator import VehicleServiceCoordinator
 from .services import async_register_services, async_unregister_services
 
-PLATFORMS: list[str] = ["number", "sensor", "binary_sensor", "button"]
+PLATFORMS: list[str] = ["number", "date", "sensor", "binary_sensor", "button"]
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
