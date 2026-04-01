@@ -58,6 +58,7 @@ class VehicleTechnicalInspectionIntervalDaysNumber(
     _attr_native_min_value = 1
     _attr_native_max_value = 999
     _attr_native_step = 1
+    _attr_suggested_display_precision = 0
     _attr_native_unit_of_measurement = "d"
     _attr_mode = NumberMode.BOX
 
@@ -68,9 +69,9 @@ class VehicleTechnicalInspectionIntervalDaysNumber(
         )
 
     @property
-    def native_value(self) -> float | None:
+    def native_value(self) -> int | None:
         interval_days = get_technical_inspection_interval_days(self.coordinator.entry)
-        return float(interval_days) if interval_days is not None else None
+        return interval_days
 
     async def async_set_native_value(self, value: float) -> None:
         await self.coordinator.async_set_technical_inspection(interval_days=int(value))
