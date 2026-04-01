@@ -96,7 +96,7 @@ def _vehicle_inspection_schema(defaults: dict[str, Any] | None = None) -> vol.Sc
                     OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS,
                     DEFAULT_TECHNICAL_INSPECTION_INTERVAL_DAYS,
                 ),
-            ): vol.All(vol.Coerce(int), vol.Range(min=1)),
+            ): vol.All(vol.Coerce(int), vol.Range(min=1, max=999)),
         }
     )
 
@@ -159,7 +159,7 @@ class VehicleServiceOptionsFlow(config_entries.OptionsFlow):
             try:
                 date.fromisoformat(user_input[OPTION_TECHNICAL_INSPECTION_LAST_DATE])
                 interval_days = int(user_input[OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS])
-                if interval_days <= 0:
+                if interval_days <= 0 or interval_days > 999:
                     raise ValueError
             except (TypeError, ValueError):
                 errors["base"] = "invalid_vehicle_inspection"

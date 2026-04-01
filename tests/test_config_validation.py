@@ -1,7 +1,9 @@
 from custom_components.vehicle_service_helper.config_flow import (
     VehicleServiceOptionsFlow,
+    _vehicle_inspection_schema,
     _normalize_positive_int,
 )
+from voluptuous import MultipleInvalid
 from custom_components.vehicle_service_helper.const import (
     OPTION_TEMPLATES,
     TEMPLATE_DUE_SOON_DAYS,
@@ -77,3 +79,29 @@ def test_validate_template_accepts_mileage_only() -> None:
     assert normalized[TEMPLATE_NAME] == "Oil Change"
     assert normalized[TEMPLATE_MILEAGE_INTERVAL] == 10000
     assert normalized[TEMPLATE_TIME_INTERVAL_MONTHS] is None
+
+
+def test_vehicle_inspection_interval_allows_up_to_999_days() -> None:
+    schema = _vehicle_inspection_schema()
+    valid = schema(
+        {
+            "technical_inspection_last_date": "2026-04-01",
+            "technical_inspection_interval_days": 999,
+        }
+    )
+    assert valid["technical_inspection_interval_days"] == 999
+
+
+def test_vehicle_inspection_interval_rejects_values_above_999_days() -> None:
+    schema = _vehicle_inspection_schema()
+    try:
+        schema(
+            {
+                "technical_inspection_last_date": "2026-04-01",
+                "technical_inspection_interval_days": 1000,
+            }
+        )
+    except MultipleInvalid:
+        pass
+    else:
+        raise AssertionError("Expected validation failure for interval > 999")

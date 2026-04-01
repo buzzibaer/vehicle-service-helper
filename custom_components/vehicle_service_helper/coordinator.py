@@ -113,7 +113,7 @@ class VehicleServiceCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]
             options[OPTION_TECHNICAL_INSPECTION_LAST_DATE] = last_inspection_date.isoformat()
 
         if interval_days is not None:
-            if interval_days <= 0:
+            if interval_days <= 0 or interval_days > 999:
                 raise ValueError("inspection_interval_must_be_positive")
             options[OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS] = int(interval_days)
 
