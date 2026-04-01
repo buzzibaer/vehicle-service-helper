@@ -8,6 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import (
+    COORDINATOR_VEHICLE_KEY,
     CONF_DISTANCE_UNIT,
     DOMAIN,
     OPTION_TEMPLATES,
@@ -32,6 +33,9 @@ async def async_setup_entry(
     templates = entry.options.get(OPTION_TEMPLATES, [])
     entities: list[SensorEntity] = []
 
+    entities.append(VehicleTechnicalInspectionDateSensor(coordinator))
+    entities.append(VehicleTechnicalInspectionRemainingDaysSensor(coordinator))
+
     for template in templates:
         template_id = template[TEMPLATE_ID]
         entities.append(TemplateStatusSensor(coordinator, template))
@@ -42,6 +46,49 @@ async def async_setup_entry(
             entities.append(TemplateRemainingDaysSensor(coordinator, template_id, template))
 
     async_add_entities(entities)
+
+
+class VehicleTechnicalInspectionDateSensor(VehicleServiceCoordinatorEntity, SensorEntity):
+    _attr_name = "Technical Inspection Next Date"
+    _attr_has_entity_name = True
+
+    def __init__(self, coordinator: VehicleServiceCoordinator) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = f"{coordinator.entry.entry_id}_technical_inspection_next_date"
+
+    @property
+    def native_value(self) -> str | None:
+        vehicle_data = self.coordinator.data.get(COORDINATOR_VEHICLE_KEY, {})
+        return vehicle_data.get("next_inspection_date")
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        vehicle_data = self.coordinator.data.get(COORDINATOR_VEHICLE_KEY, {})
+        return {
+            "last_inspection_date": vehicle_data.get("last_inspection_date"),
+            "inspection_interval_days": vehicle_data.get("interval_days"),
+            "remaining_days": vehicle_data.get("remaining_days"),
+            "is_overdue": vehicle_data.get("is_overdue", False),
+        }
+
+
+class VehicleTechnicalInspectionRemainingDaysSensor(
+    VehicleServiceCoordinatorEntity, SensorEntity
+):
+    _attr_name = "Technical Inspection Remaining Days"
+    _attr_native_unit_of_measurement = "d"
+    _attr_has_entity_name = True
+
+    def __init__(self, coordinator: VehicleServiceCoordinator) -> None:
+        super().__init__(coordinator)
+        self._attr_unique_id = (
+            f"{coordinator.entry.entry_id}_technical_inspection_remaining_days"
+        )
+
+    @property
+    def native_value(self) -> int | None:
+        vehicle_data = self.coordinator.data.get(COORDINATOR_VEHICLE_KEY, {})
+        return vehicle_data.get("remaining_days")
 
 
 class TemplateBaseSensor(VehicleServiceCoordinatorEntity, SensorEntity):

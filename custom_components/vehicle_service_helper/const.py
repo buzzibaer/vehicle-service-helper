@@ -6,6 +6,7 @@ CONF_LICENSE_PLATE = "license_plate"
 
 DEFAULT_DISTANCE_UNIT = "km"
 DEFAULT_ODOMETER = 0.0
+DEFAULT_TECHNICAL_INSPECTION_INTERVAL_DAYS = 365
 
 ATTR_ENTRY_ID = "entry_id"
 ATTR_TEMPLATE_ID = "template_id"
@@ -15,6 +16,10 @@ ATTR_SERVICE_DATE = "service_date"
 
 OPTION_CURRENT_ODOMETER = "current_odometer"
 OPTION_TEMPLATES = "templates"
+OPTION_TECHNICAL_INSPECTION_LAST_DATE = "technical_inspection_last_date"
+OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS = "technical_inspection_interval_days"
+
+COORDINATOR_VEHICLE_KEY = "__vehicle__"
 
 TEMPLATE_ID = "id"
 TEMPLATE_NAME = "name"

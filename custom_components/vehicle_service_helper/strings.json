@@ -53,12 +53,20 @@
         "data": {
           "id": "Template"
         }
+      },
+      "edit_vehicle_inspection": {
+        "title": "Technical inspection settings",
+        "data": {
+          "technical_inspection_last_date": "Last technical inspection date",
+          "technical_inspection_interval_days": "Inspection interval (days)"
+        }
       }
     },
     "error": {
       "name_required": "Template name is required.",
       "interval_required": "Set mileage or time interval.",
-      "invalid_template": "Template values are invalid."
+      "invalid_template": "Template values are invalid.",
+      "invalid_vehicle_inspection": "Technical inspection values are invalid."
     }
   }
 }

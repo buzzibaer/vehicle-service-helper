@@ -15,8 +15,11 @@ from .const import (
     CONF_VEHICLE_NAME,
     DEFAULT_DISTANCE_UNIT,
     DEFAULT_ODOMETER,
+    DEFAULT_TECHNICAL_INSPECTION_INTERVAL_DAYS,
     DOMAIN,
     OPTION_CURRENT_ODOMETER,
+    OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS,
+    OPTION_TECHNICAL_INSPECTION_LAST_DATE,
     OPTION_TEMPLATES,
     TEMPLATE_DUE_SOON_DAYS,
     TEMPLATE_DUE_SOON_DISTANCE,
@@ -77,6 +80,27 @@ def _template_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
     )
 
 
+def _vehicle_inspection_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
+    defaults = defaults or {}
+    return vol.Schema(
+        {
+            vol.Required(
+                OPTION_TECHNICAL_INSPECTION_LAST_DATE,
+                default=defaults.get(
+                    OPTION_TECHNICAL_INSPECTION_LAST_DATE, date.today().isoformat()
+                ),
+            ): cv.string,
+            vol.Required(
+                OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS,
+                default=defaults.get(
+                    OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS,
+                    DEFAULT_TECHNICAL_INSPECTION_INTERVAL_DAYS,
+                ),
+            ): vol.All(vol.Coerce(int), vol.Range(min=1)),
+        }
+    )
+
+
 class VehicleServiceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
@@ -94,6 +118,8 @@ class VehicleServiceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 options={
                     OPTION_CURRENT_ODOMETER: DEFAULT_ODOMETER,
                     OPTION_TEMPLATES: [],
+                    OPTION_TECHNICAL_INSPECTION_LAST_DATE: date.today().isoformat(),
+                    OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS: DEFAULT_TECHNICAL_INSPECTION_INTERVAL_DAYS,
                 },
             )
 
@@ -120,10 +146,36 @@ class VehicleServiceOptionsFlow(config_entries.OptionsFlow):
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None):
         templates = self._get_templates()
-        menu_options = ["add_template"]
+        menu_options = ["edit_vehicle_inspection", "add_template"]
         if templates:
             menu_options.extend(["edit_template_select", "remove_template"])
         return self.async_show_menu(step_id="init", menu_options=menu_options)
+
+    async def async_step_edit_vehicle_inspection(
+        self, user_input: dict[str, Any] | None = None
+    ):
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            try:
+                date.fromisoformat(user_input[OPTION_TECHNICAL_INSPECTION_LAST_DATE])
+                interval_days = int(user_input[OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS])
+                if interval_days <= 0:
+                    raise ValueError
+            except (TypeError, ValueError):
+                errors["base"] = "invalid_vehicle_inspection"
+            else:
+                options = dict(self._config_entry.options)
+                options[OPTION_TECHNICAL_INSPECTION_LAST_DATE] = user_input[
+                    OPTION_TECHNICAL_INSPECTION_LAST_DATE
+                ]
+                options[OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS] = interval_days
+                return self.async_create_entry(title="", data=options)
+
+        return self.async_show_form(
+            step_id="edit_vehicle_inspection",
+            data_schema=_vehicle_inspection_schema(self._config_entry.options),
+            errors=errors,
+        )
 
     async def async_step_add_template(self, user_input: dict[str, Any] | None = None):
         errors: dict[str, str] = {}

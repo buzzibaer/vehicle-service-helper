@@ -1,6 +1,9 @@
 from datetime import date
 
-from custom_components.vehicle_service_helper.reminder_engine import compute_template_status
+from custom_components.vehicle_service_helper.reminder_engine import (
+    compute_template_status,
+    compute_technical_inspection_status,
+)
 
 
 def test_mileage_rule_overdue_when_remaining_distance_is_negative() -> None:
@@ -76,3 +79,27 @@ def test_either_rule_can_trigger_overdue() -> None:
     assert result["remaining_distance"] == 13000
     assert result["remaining_days"] < 0
     assert result["status"] == "overdue"
+
+
+def test_technical_inspection_next_date_is_calculated_from_last_date_plus_days() -> None:
+    result = compute_technical_inspection_status(
+        last_inspection_date_iso="2026-01-10",
+        interval_days=365,
+        today=date(2026, 4, 1),
+    )
+
+    assert result["next_inspection_date"] == "2027-01-10"
+    assert result["remaining_days"] == 284
+    assert result["is_overdue"] is False
+
+
+def test_technical_inspection_is_overdue_when_next_date_in_past() -> None:
+    result = compute_technical_inspection_status(
+        last_inspection_date_iso="2024-01-10",
+        interval_days=365,
+        today=date(2026, 4, 1),
+    )
+
+    assert result["next_inspection_date"] == "2025-01-09"
+    assert result["remaining_days"] < 0
+    assert result["is_overdue"] is True

@@ -10,14 +10,17 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.util import dt as dt_util
 
 from .const import (
+    COORDINATOR_VEHICLE_KEY,
     DEFAULT_ODOMETER,
     OPTION_CURRENT_ODOMETER,
+    OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS,
+    OPTION_TECHNICAL_INSPECTION_LAST_DATE,
     OPTION_TEMPLATES,
     TEMPLATE_ID,
     TEMPLATE_LAST_SERVICE_DATE,
     TEMPLATE_LAST_SERVICE_ODOMETER,
 )
-from .reminder_engine import compute_template_status
+from .reminder_engine import compute_template_status, compute_technical_inspection_status
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -50,6 +53,13 @@ class VehicleServiceCoordinator(DataUpdateCoordinator[dict[str, dict[str, Any]]]
         today = dt_util.now().date()
 
         computed: dict[str, dict[str, Any]] = {}
+        computed[COORDINATOR_VEHICLE_KEY] = compute_technical_inspection_status(
+            last_inspection_date_iso=self.entry.options.get(
+                OPTION_TECHNICAL_INSPECTION_LAST_DATE
+            ),
+            interval_days=self.entry.options.get(OPTION_TECHNICAL_INSPECTION_INTERVAL_DAYS),
+            today=today,
+        )
         for template in templates:
             template_id = template[TEMPLATE_ID]
             computed[template_id] = compute_template_status(

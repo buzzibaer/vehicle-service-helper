@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import calendar
-from datetime import date
+from datetime import date, timedelta
 from typing import Any
 
 from .const import STATUS_DUE_SOON, STATUS_OK, STATUS_OVERDUE
@@ -41,6 +41,34 @@ def _add_months(base: date, months: int) -> date:
     month = (month_index % 12) + 1
     day = min(base.day, calendar.monthrange(year, month)[1])
     return date(year, month, day)
+
+
+def compute_technical_inspection_status(
+    last_inspection_date_iso: str | None,
+    interval_days: int | None,
+    today: date,
+) -> dict[str, Any]:
+    last_inspection_date = _parse_iso_date(last_inspection_date_iso)
+    normalized_interval_days = _as_positive_int(interval_days)
+
+    if last_inspection_date is None or normalized_interval_days is None:
+        return {
+            "next_inspection_date": None,
+            "remaining_days": None,
+            "is_overdue": False,
+            "last_inspection_date": last_inspection_date_iso,
+            "interval_days": normalized_interval_days,
+        }
+
+    next_inspection_date = last_inspection_date + timedelta(days=normalized_interval_days)
+    remaining_days = (next_inspection_date - today).days
+    return {
+        "next_inspection_date": next_inspection_date.isoformat(),
+        "remaining_days": remaining_days,
+        "is_overdue": remaining_days < 0,
+        "last_inspection_date": last_inspection_date_iso,
+        "interval_days": normalized_interval_days,
+    }
 
 
 def compute_template_status(
