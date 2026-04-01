@@ -13,13 +13,9 @@
 
 ## Branding
 
-- Repository icon for HACS is provided as `icon.png`.
-- Editable source is available as `icon.svg`.
-- Integration brand assets are bundled in `custom_components/vehicle_service_helper/` as:
-  - `icon.png`, `icon@2x.png`
-  - `logo.png`, `logo@2x.png`
-- On newer Home Assistant versions (Brands Proxy API), these files are used in the integration UI.
-- On older Home Assistant versions, integration tile icons may still require a PR to `home-assistant/brands` under `custom_integrations/vehicle_service_helper/`.
+- Add your own branding assets when ready:
+  - Repository icon for HACS: `icon.png` at repo root
+  - Integration assets: `custom_components/vehicle_service_helper/icon.png`, `icon@2x.png`, `logo.png`, `logo@2x.png`
 
 ## Installation
 
